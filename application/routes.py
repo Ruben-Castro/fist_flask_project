@@ -9,8 +9,9 @@ def index():
     return render_template("index.html", index = True)
 
 
-@app.route("/courses")
-def courses():
+@app.route("/courses/")
+@app.route("/courses/<term>")
+def courses(term = "Spring 2021"):
     courseData = [
         {
             "courseID": "1111",
@@ -31,7 +32,7 @@ def courses():
             "title": "Adv PHP 201",
             "description": "Advanced PHP Programming",
             "credits": "3",
-            "term": "Fall",
+            "term": "Fall",  
         },
         {
             "courseID": "4444",
@@ -48,7 +49,7 @@ def courses():
             "term": "Fall",
         },
     ]
-    return render_template("courses.html", courseData = courseData, courses = True)
+    return render_template("courses.html", courseData = courseData, courses = True, term = term)
 
 
 @app.route("/register")

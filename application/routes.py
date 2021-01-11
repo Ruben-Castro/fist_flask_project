@@ -11,18 +11,18 @@ def index():
 
 @app.route('/courses')
 def courses():
-    return "Courses Page"
+    return render_template("courses.html")
 
 
 
 @app.route('/register')
 def register():
-    return "Register Page"
+    return render_template("register.html")
 
 
 
 @app.route('/login')
 def login():
-    return "Login Page"
+    return render_template("login.html")
 
 

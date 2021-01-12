@@ -1,18 +1,8 @@
 from application import app
-from flask import render_template, request
+from flask import render_template, request, Response, json
 
 
-@app.route("/")
-@app.route("/index")
-@app.route("/home")
-def index():
-    return render_template("index.html", index = True)
-
-
-@app.route("/courses/")
-@app.route("/courses/<term>")
-def courses(term = "Spring 2021"):
-    courseData = [
+courseData = [
         {
             "courseID": "1111",
             "title": "PHP 111",
@@ -49,6 +39,17 @@ def courses(term = "Spring 2021"):
             "term": "Fall",
         },
     ]
+
+@app.route("/")
+@app.route("/index")
+@app.route("/home")
+def index():
+    return render_template("index.html", index = True)
+
+
+@app.route("/courses/")
+@app.route("/courses/<term>")
+def courses(term = "Spring 2021"):
     return render_template("courses.html", courseData = courseData, courses = True, term = term)
 
 
@@ -68,3 +69,15 @@ def enrollment():
     term = request.form.get('term')
 
     return render_template("enrollment.html", enrollment= True, data = {"id": id, "title": title, "term": term})
+
+
+@app.route('/api/')
+@app.route('/api/<int:idx>')
+def api(idx = None):
+    if idx == None:
+        jdata = courseData
+    else:
+        jdata = courseData[idx]
+    
+    return Response(json.dumps(jdata), mimetype="application/json")
+

@@ -1,5 +1,6 @@
 from application import app, db
 from flask import render_template, request, Response, json
+from application.models import User, Course, Enrollment
 
 @app.route("/")
 @app.route("/index")
@@ -11,6 +12,7 @@ def index():
 @app.route("/courses/")
 @app.route("/courses/<term>")
 def courses(term="Spring 2021"):
+    courseData = Course.objects.all()
     return render_template(
         "courses.html", courseData=courseData, courses=True, term=term
     )
@@ -49,13 +51,6 @@ def api(idx=None):
 
     return Response(json.dumps(jdata), mimetype="application/json")
 
-
-class User(db.Document):
-    user_id = db.IntField(unique=True)
-    first_name = db.StringField(max_length=50)
-    last_name = db.StringField(max_length=50)
-    email = db.StringField(max_length=30)
-    password = db.StringField(max_length=30)
 
 @app.route('/user')
 def user():

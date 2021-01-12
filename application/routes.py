@@ -2,6 +2,8 @@ from application import app, db
 from flask import render_template, request, Response, json
 from application.models import User, Course, Enrollment
 from application.forms import LoginForm, RegisterForm
+
+
 @app.route("/")
 @app.route("/index")
 @app.route("/home")
@@ -26,7 +28,7 @@ def register():
 @app.route("/login")
 def login():
     form = LoginForm()
-    return render_template("login.html", title="Login" ,login=True, form = form)
+    return render_template("login.html", title="Login", login=True, form=form)
 
 
 @app.route("/enrollement", methods=["GET", "POST"])
@@ -53,7 +55,7 @@ def api(idx=None):
     return Response(json.dumps(jdata), mimetype="application/json")
 
 
-@app.route('/user')
+@app.route("/user")
 def user():
     users = User.objects.all()
     return render_template("user.html", users=users)

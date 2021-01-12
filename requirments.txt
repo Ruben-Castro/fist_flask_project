@@ -1,6 +1,0 @@
-flask 
-flask-wtf
-python-dotenv
-MarkupSafe
-Click
-flask-mongoengine

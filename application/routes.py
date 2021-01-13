@@ -24,14 +24,16 @@ def courses(term="Spring 2021"):
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        user_id = User.objects.count() 
+        user_id = User.objects.count()
         user_id += 1
         email = form.email.data
         password = form.password.data
         first_name = form.first_name.data
         last_name = form.last_name.data
 
-        user = User(user_id= user_id, email = email, first_name = first_name, last_name = last_name)
+        user = User(
+            user_id=user_id, email=email, first_name=first_name, last_name=last_name
+        )
         user.set_password(password)
         user.save()
         flash("you are successfully registered.", "success")
@@ -62,14 +64,59 @@ def login():
 
 @app.route("/enrollement", methods=["GET", "POST"])
 def enrollment():
-    id = request.form.get("courseId")
-    title = request.form.get("title")
-    term = request.form.get("term")
+    courseID = request.form.get("courseId")
+    courseTitle = request.form.get("title")
 
+    user_id = 1
+
+    if courseID:
+        if Enrollment.objects(user_id=user_id, courseID=courseID):
+            flash(
+                f"Oops! You are already registered in this course{courseTitle}!",
+                "danger",
+            )
+            return redirect(url_for("courses"))
+        else:
+            Enrollment(user_id=user_id, courseID=courseID).save()
+            flash(f"You are enrolled in {courseTitle}!", "success")
+            
+
+    classes = list(
+        User.objects.aggregate(
+            *[
+                {
+                    "$lookup": {
+                        "from": "enrollment",
+                        "localField": "user_id",
+                        "foreignField": "user_id",
+                        "as": "r1",
+                    }
+                },
+                {
+                    "$unwind": {
+                        "path": "$r1",
+                        "includeArrayIndex": "r1_id",
+                        "preserveNullAndEmptyArrays": False,
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "course",
+                        "localField": "r1.courseID",
+                        "foreignField": "courseID",
+                        "as": "r2",
+                    }
+                },
+                {"$unwind": {"path": "$r2", "preserveNullAndEmptyArrays": False}},
+                {"$match": {"user_id": user_id}},
+                {"$sort": {"courseID": 1}},
+            ]
+        )
+    )
+
+    
     return render_template(
-        "enrollment.html",
-        enrollment=True,
-        data={"id": id, "title": title, "term": term},
+        "enrollment.html", enrollment=True, title="Enrollment", classes=classes
     )
 
 

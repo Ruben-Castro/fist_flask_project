@@ -1,5 +1,5 @@
 from application import app, db
-from flask import render_template, request, Response, json, redirect, flash, url_for
+from flask import render_template, request, Response, json, redirect, flash, url_for, session
 from application.models import User, Course, Enrollment
 from application.forms import LoginForm, RegisterForm
 
@@ -22,6 +22,9 @@ def courses(term="Spring 2021"):
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if session.get('username'):
+        return redirect(url_for('index'))
+
     form = RegisterForm()
     if form.validate_on_submit():
         user_id = User.objects.count()
@@ -45,8 +48,19 @@ def register():
     return render_template("register.html", title="Register", register=True, form=form)
 
 
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    session.pop('user_id', None)
+    return redirect(url_for('index'))
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if session.get('username'):
+        return redirect(url_for('index'))
+
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -54,6 +68,8 @@ def login():
 
         user = User.objects(email=email).first()
         if user and user.get_password(password):
+            session['user_id'] = user.user_id
+            session['username'] = user.first_name
             flash(f"{user.first_name}, you are successfully logged in!", "success")
             return redirect(url_for("index"))
         else:
@@ -64,10 +80,14 @@ def login():
 
 @app.route("/enrollement", methods=["GET", "POST"])
 def enrollment():
+    # if the user is not logged in then they cant access enrollment information 
+    if  not session.get('user_name'):
+        return redirect(url_for('login'))
+
     courseID = request.form.get("courseId")
     courseTitle = request.form.get("title")
 
-    user_id = 1
+    user_id = session.get('user_id')
 
     if courseID:
         if Enrollment.objects(user_id=user_id, courseID=courseID):

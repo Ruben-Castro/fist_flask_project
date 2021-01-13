@@ -22,7 +22,15 @@ def courses(term="Spring 2021"):
 
 @app.route("/register")
 def register():
-    return render_template("register.html", register=True)
+    form = RegisterForm()
+    if form.validate_on_submit():
+        flash("you are successfully registered.", "success")
+        return redirect(for_url('login'))
+    else:
+        flash("Sorry, your registration failed. Please try again.", "danger")
+
+    return render_template("register.html", register=True, form=form)
+    
 
 
 @app.route("/login")

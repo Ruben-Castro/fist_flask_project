@@ -1,5 +1,5 @@
 from application import app, db
-from flask import render_template, request, Response, json, redirect, flash
+from flask import render_template, request, Response, json, redirect, flash, url_for
 from application.models import User, Course, Enrollment
 from application.forms import LoginForm, RegisterForm
 
@@ -33,7 +33,7 @@ def register():
     
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET","POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():

@@ -39,11 +39,19 @@ def register():
         )
         user.set_password(password)
         user.save()
-        flash("you are successfully registered.", "success")
 
-        return redirect(url_for("login"))
-    else:
+        #check if the user is now in the database 
+        new_user = User.objects(user_id = user_id).first()
+
+        if new_user:
+            flash("you are successfully registered.", "success")
+            return redirect(url_for("login"))
+        
         flash("Sorry, your registration failed. Please try again.", "danger")
+
+       
+       
+    
 
     return render_template("register.html", title="Register", register=True, form=form)
 
@@ -134,7 +142,6 @@ def enrollment():
         )
     )
 
-    
     return render_template(
         "enrollment.html", enrollment=True, title="Enrollment", classes=classes
     )

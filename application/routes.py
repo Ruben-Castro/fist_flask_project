@@ -20,26 +20,40 @@ def courses(term="Spring 2021"):
     )
 
 
-@app.route("/register", methods=['GET', "POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        user_id = User.objects.count() 
+        user_id += 1
+        email = form.email.data
+        password = form.password.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+
+        user = User(user_id= user_id, email = email, first_name = first_name, last_name = last_name)
+        user.set_password(password)
+        user.save()
         flash("you are successfully registered.", "success")
-        return redirect(for_url('login'))
+
+        return redirect(url_for("login"))
     else:
         flash("Sorry, your registration failed. Please try again.", "danger")
 
-    return render_template("register.html", register=True, form=form)
-    
+    return render_template("register.html", title="Register", register=True, form=form)
 
 
-@app.route("/login", methods=["GET","POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if request.form.get("email") == "test@uta.com":
-            flash("You are successfully logged in!", "success")
-            return redirect(url_for('index'))
+        email = form.email.data
+        password = form.password.data
+
+        user = User.objects(email=email).first()
+        if user and user.get_password(password):
+            flash(f"{user.first_name}, you are successfully logged in!", "success")
+            return redirect(url_for("index"))
         else:
             flash("Sorry, Something whent wrong", "danger")
 

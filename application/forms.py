@@ -6,10 +6,10 @@ from application.models import User
 
 class RegisterForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = StringField(
+    password = PasswordField(
         "Password", validators=[DataRequired(), Length(min=6, max=20)]
     )
-    confirm_password = StringField(
+    confirm_password = PasswordField(
         "Confirm Password",
         validators=[DataRequired(), Length(min=6, max=20), EqualTo("password")],
     )
@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = StringField(
+    password = PasswordField(
         "Password", validators=[DataRequired(), Length(min=6, max=20)]
     )
     remeber_me = BooleanField("Remember Me")

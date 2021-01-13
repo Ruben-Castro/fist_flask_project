@@ -14,7 +14,7 @@ def index():
 @app.route("/courses/")
 @app.route("/courses/<term>")
 def courses(term="Spring 2021"):
-    courseData = Course.objects.all()
+    courseData = Course.objects.order_by("courseID")
     return render_template(
         "courses.html", courseData=courseData, courses=True, term=term
     )

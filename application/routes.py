@@ -20,7 +20,7 @@ def courses(term="Spring 2021"):
     )
 
 
-@app.route("/register")
+@app.route("/register" methods=['GET', "POST"])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():

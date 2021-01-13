@@ -81,7 +81,7 @@ def login():
 @app.route("/enrollement", methods=["GET", "POST"])
 def enrollment():
     # if the user is not logged in then they cant access enrollment information 
-    if  not session.get('user_name'):
+    if  not session.get('username'):
         return redirect(url_for('login'))
 
     courseID = request.form.get("courseId")

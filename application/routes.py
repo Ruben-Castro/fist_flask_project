@@ -29,8 +29,12 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        flash("You are successfully logged in!")
-        return redirect(url_for('index'))
+        if request.form.get("email") == "test@uta.com":
+            flash("You are successfully logged in!", "success")
+            return redirect(url_for('index'))
+        else:
+            flash("Sorry, Something whent wrong", "danger")
+
     return render_template("login.html", title="Login", login=True, form=form)
 
 

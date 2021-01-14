@@ -1,7 +1,76 @@
-from application import app, db
-from flask import render_template, request, Response, json, redirect, flash, url_for, session
+from application import app, db, api
+from flask import render_template, request, Response, json, redirect, flash, url_for, session, jsonify
 from application.models import User, Course, Enrollment
 from application.forms import LoginForm, RegisterForm
+from flask_restplus import Resource
+
+
+
+
+
+
+
+
+
+#########################################################################
+
+@api.route('/api', '/api/')
+class GetAndPost(Resource):
+    
+    def get(self):
+        return jsonify(User.objects.all())
+    
+    def post(self):
+        data = api.payload
+        user = User(user_id=data['user_id'], email= data['email'], first_name=data['first_name'], last_name=data['last_name'])
+        user.set_password(data['password'])
+        user.save()
+
+        return jsonify(User.objects(user_id = data['user_id']))
+
+
+@api.route('/api/<int:idx>')
+class GetUpdateDelete(Resource):
+    
+    def get(self, idx):
+        return jsonify(User.objects(user_id=idx))
+    
+    def put(self, idx):
+        data = api.payload
+        User.objects(user_id=idx).update(**data)
+        user = User.objects(user_id=idx)
+    
+        return jsonify(user)
+
+
+    def delete(self, idx):
+        User.objects(user_id=idx).delete()
+
+        return jsonify("user is deleted!")
+
+
+
+
+
+#########################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @app.route("/")
@@ -147,15 +216,6 @@ def enrollment():
     )
 
 
-@app.route("/api/")
-@app.route("/api/<int:idx>")
-def api(idx=None):
-    if idx == None:
-        jdata = courseData
-    else:
-        jdata = courseData[idx]
-
-    return Response(json.dumps(jdata), mimetype="application/json")
 
 
 @app.route("/user")

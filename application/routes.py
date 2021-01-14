@@ -3,7 +3,7 @@ from flask import render_template, request, Response, json, redirect, flash, url
 from application.models import User, Course, Enrollment
 from application.forms import LoginForm, RegisterForm
 from flask_restplus import Resource
-
+from application.queries import user_classes_query
 
 
 
@@ -53,25 +53,6 @@ class GetUpdateDelete(Resource):
 
 
 #########################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @app.route("/")
 @app.route("/index")
@@ -178,39 +159,7 @@ def enrollment():
             flash(f"You are enrolled in {courseTitle}!", "success")
             
 
-    classes = list(
-        User.objects.aggregate(
-            *[
-                {
-                    "$lookup": {
-                        "from": "enrollment",
-                        "localField": "user_id",
-                        "foreignField": "user_id",
-                        "as": "r1",
-                    }
-                },
-                {
-                    "$unwind": {
-                        "path": "$r1",
-                        "includeArrayIndex": "r1_id",
-                        "preserveNullAndEmptyArrays": False,
-                    }
-                },
-                {
-                    "$lookup": {
-                        "from": "course",
-                        "localField": "r1.courseID",
-                        "foreignField": "courseID",
-                        "as": "r2",
-                    }
-                },
-                {"$unwind": {"path": "$r2", "preserveNullAndEmptyArrays": False}},
-                {"$match": {"user_id": user_id}},
-                {"$sort": {"courseID": 1}},
-            ]
-        )
-    )
-
+    classes = user_classes_query(user_id)
     return render_template(
         "enrollment.html", enrollment=True, title="Enrollment", classes=classes
     )

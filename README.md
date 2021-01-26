@@ -1,2 +1,2 @@
-# fist_flask_project
+# frist_flask_project
 First Flask Project 

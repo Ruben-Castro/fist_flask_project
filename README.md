@@ -1,7 +1,7 @@
 # first_flask_project
 
 ## Description 
-This project is a basic introduction to python web development with the flask framework. The Project mimics a basic university course registration website. 
+This project is a basic introduction to python web development with the flask framework. The Project mimics a basic university course registration website. And provides basic Authorization and Authentication.
 
 ## What I Learned 
 

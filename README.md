@@ -6,14 +6,24 @@ This project is a basic introduction to python web development with the flask fr
 ## What I Learned 
 
 ### Routing with Flask 
-  - Create a URL from a string 
-  - Create a URL Session 
-  - Give a session a task 
-  - Parse JSON Payload if task returns a successful payload
+  - request
+  - Response 
+  - Redirect
+  - url_for
+  - session
+  -render_template
+  
 ### jinga templates with flask
-  - Required to convert a external representation in my case the JSON payload into a swift type im my case the weather data struct
+  - I learned how to use jinga to elimate duplicate code via macros, and base templates.
+  - I learned how to dynamically display content on our web app. 
+  - I learned jinga's syntax 
+  
 ### flask SQL-Alchemy 
-  - Required to modify UI Child UI views from the view controller 
-  - Design pattern used to decouple 
+  - ORM used to facilitate interactions with a database. 
+  - How to create, read, update and delete infomation from database 
+  - How to write classes to represent db model. 
 
+### WTF-Form 
+  - I learned how to do basic server side form validation. 
+  
 
